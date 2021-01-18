@@ -1,5 +1,17 @@
-import activityCoefficients from './activityCoefficients';
 import { formatInput } from '../utils/formatInput';
+
+const caloriesFormulaConstants = new Map([
+  ['male', 5],
+  ['female', -161]
+]);
+
+const physicalActivityRatios = new Map([
+  ['min', 1.2],
+  ['low', 1.375],
+  ['medium', 1.55],
+  ['high', 1.725],
+  ['max', 1.9]
+]);
 
 export default class CaloriesCounter {
   constructor(element) {
@@ -64,27 +76,20 @@ export default class CaloriesCounter {
     this.addEventListeners();
   }
 
-  getActivityCoefficient() {
+  getActivityRatio() {
     const activity = this.activityInputs.value;
-    return activityCoefficients.get(activity);
+    return physicalActivityRatios.get(activity);
   }
 
   getCaloriesNorm() {
+    const weight = Number(this.weightInput.value);
+    const height = Number(this.heightInput.value);
+    const age = Number(this.ageInput.value);
     const gender = this.genderInputs.value;
-    let caloriesNorm = 10 * Number(this.weightInput.value) + 6.25 * Number(this.heightInput.value) - 5 * Number(this.ageInput.value);
+    const caloriesNorm = (10 * weight + 6.25 * height - 5 * age) + caloriesFormulaConstants.get(gender);
+    const activityRatio = this.getActivityRatio();
 
-    switch (gender) {
-      case 'male':
-        caloriesNorm += 5;
-        break;
-      case 'female':
-        caloriesNorm -= 161;
-        break;
-      default:
-        throw Error('Пол не выбран');
-    }
-
-    return Math.round(caloriesNorm * this.getActivityCoefficient());
+    return Math.round(caloriesNorm * activityRatio);
   };
 
   getCaloriesMinimal(caloriesNorm) {
