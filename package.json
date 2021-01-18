@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "build": "parcel build ./src/index.html --no-source-maps",
-    "deploy": "parcel build ./src/index.html --no-source-maps && gh-pages -d dist",
+    "deploy": "parcel build ./src/index.html --public-url /js-calories-counter --no-source-maps && gh-pages -d dist",
     "start": "parcel ./src/index.html --open "
   },
   "author": "Ivan Nefagin <nefagin.frontend@gmail.com>",
