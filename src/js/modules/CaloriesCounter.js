@@ -1,4 +1,5 @@
 import { formatInput } from '../utils/formatInput';
+import Result from './Result';
 
 const caloriesFormulaConstants = new Map([
   ['male', 5],
@@ -27,10 +28,7 @@ export default class CaloriesCounter {
     this.calculateButton = this.form.elements['submit'];
     this.resetButton = this.form.elements['reset'];
 
-    this.counterResult = this.root.querySelector('.counter__result');
-    this.caloriesNormElem = this.counterResult.querySelector('#calories-norm');
-    this.caloriesMinimalElem = this.counterResult.querySelector('#calories-minimal');
-    this.caloriesMaximalElem = this.counterResult.querySelector('#calories-maximal');
+    this.result = new Result(this.root);
 
     this.handleInput = this.handleInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -53,17 +51,19 @@ export default class CaloriesCounter {
 
     const caloriesNorm = this.getCaloriesNorm();
 
-    this.counterResult.classList.remove('counter__result--hidden');
+    const calories = {
+      norm: caloriesNorm,
+      minimal: this.getCaloriesMinimal(caloriesNorm),
+      maximal: this.getCaloriesMaximal(caloriesNorm)
+    }
 
-    this.caloriesNormElem.textContent = caloriesNorm;
-    this.caloriesMinimalElem.textContent = this.getCaloriesMinimal(caloriesNorm);
-    this.caloriesMaximalElem.textContent = this.getCaloriesMaximal(caloriesNorm);
+    this.result.show(calories);
   }
 
   handleReset() {
     this.calculateButton.disabled = true;
     this.resetButton.disabled = true;
-    this.counterResult.classList.add('counter__result--hidden');
+    this.result.hide();
   }
 
   addEventListeners() {
