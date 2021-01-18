@@ -1,4 +1,5 @@
 import activityCoefficients from './activityCoefficients';
+import { formatInput } from '../utils/formatInput';
 
 export default class CaloriesCounter {
   constructor(element) {
@@ -24,21 +25,15 @@ export default class CaloriesCounter {
     this.handleReset = this.handleReset.bind(this);
   }
 
-  handleInput() {
-    let isAnyInputValid = false;
-    let areAllInputsValid = true;
+  handleInput(evt) {
+    const target = evt.target;
 
-    this.parameters.forEach(input => {
-      if (input.value) {
-        isAnyInputValid = true;
-        areAllInputsValid &= true;
-      } else {
-        areAllInputsValid = false;
-      }
-    });
+    if (target.closest('[name="parameters"]')) {
+      target.value = formatInput(target);
+    }
 
-    this.calculateButton.disabled = !areAllInputsValid;
-    this.resetButton.disabled = !isAnyInputValid;
+    this.calculateButton.disabled = !this.form.checkValidity();
+    this.resetButton.disabled = !this.parameters.some(input => input.value);
   }
 
   handleSubmit(evt) {
